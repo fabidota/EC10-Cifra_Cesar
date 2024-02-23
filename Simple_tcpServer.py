@@ -1,4 +1,21 @@
 from socket import *
+# FUNÇÔES
+def trocaLetra(letra,chave):
+    nroLetra = ord(letra) + chave
+    return chr(nroLetra)
+
+def criptDecript(texto,chave,decript):
+    textoAlterado = ""
+    if (decript): 
+        chave = -chave
+
+    for caract in texto:
+            textoAlterado += trocaLetra(caract,chave)
+    return textoAlterado
+        
+
+
+
 # Configuração do servidor
 serverPort = 1300
 serverSocket = socket(AF_INET,SOCK_STREAM)
@@ -12,20 +29,17 @@ x = 1250000
 
 R1 = (G**x) % N
 
-msgSemCript = []
-
-
 # print ("TCP Server\n")
 # connectionSocket, addr = serverSocket.accept()
 # sentence = connectionSocket.recv(65000)
 #while(True):
 received = "ovo"
 print ("Received From Client: ", received)
-for letra in received:
-    msgSemCript.append((ord(letra))-3)
+chave = 3
+msgCripto = criptDecript(received,chave,False)
+print ("Mensagem cripto: ", msgCripto)
+print ("Mensagem decripto: ", criptDecript(msgCripto,chave,True))
 
-print ("Mensagem sem cripto: ", msgSemCript)
-    
     
 
     # capitalizedSentence = sentence.upper() # processamento
@@ -35,3 +49,5 @@ print ("Mensagem sem cripto: ", msgSemCript)
     # sent = str(capitalizedSentence,"utf-8")
     # print ("Sent back to Client: ", sent)
     # connectionSocket.close()
+
+    
