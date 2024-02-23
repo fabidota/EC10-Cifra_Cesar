@@ -1,7 +1,8 @@
 from socket import *
 import datetime
-serverName = "172.20.10.3"
+serverName = "10.1.70.22"
 serverPort = 1300
+geraLogsDebug = False
 
 def abreSocket():
     clientSocket.connect((serverName, serverPort))
@@ -32,12 +33,16 @@ def criptDecript(texto,chave,decript):
 def obtemChaveDiffieHellmann():
     R2 = (G ** Y) % N
     enviaR2(R2)
-    print ("enviou R2 ", R2, datetime.datetime.now())
+    realizaLog ("enviou R2 " + str(R2) + str(datetime.datetime.now()))
     R1 = recebeR1()
-    print ("recebeu R1 ", R1, datetime.datetime.now())
+    realizaLog ("recebeu R1 " + str(R1) + str(datetime.datetime.now()))
     K = (int(R1) ** Y) % N
-    print("K: ", K)
+    realizaLog ("K: " + str(K))
     return K
+
+def realizaLog(msg):
+    if(geraLogsDebug):
+        print (msg)
 
 clientSocket = socket(AF_INET, SOCK_STREAM)
 G = 11
@@ -50,8 +55,8 @@ K = obtemChaveDiffieHellmann()
 
 msg = input("Mande uma mensagem: ")
 msgCript = criptDecript(msg, K, False)
-print ("Mensagem original: ", msg)
-print ("Mensagem criptografada enviada: ", msgCript)
+realizaLog ("Mensagem original: " + msg)
+realizaLog ("Mensagem criptografada enviada: " + msgCript)
 clientSocket.send(bytes(msgCript, "utf-8"))
 
 fechaSocket()
