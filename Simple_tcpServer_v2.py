@@ -3,6 +3,7 @@ import datetime
 import time
 serverPort = 1300
 serverSocket = socket(AF_INET,SOCK_STREAM)
+geraLogsDebugs = True
 
 def abreSocket():
     serverSocket.bind(("",serverPort))
@@ -32,17 +33,21 @@ def criptDecript(texto,chave,decript):
             textoAlterado += trocaLetra(caract,chave)
     return textoAlterado
 
-def obtemChaveDiffieHellman():
+def obtemChaveDiffieHellman():    
     R1 = (G ** X) % N
     time.sleep(1)
     R2 = recebeR2()
-    print ("recebe R2 ", R2, datetime.datetime.now())
     time.sleep(1)
     enviaR1(R1)
-    print ("envia R1 ", R1, datetime.datetime.now())
     K = (int(R2) ** X) % N
-    print("K1: ", K)
+    realizaLog("recebe R2 " + str(R2) + str(datetime.datetime.now()))
+    realizaLog("envia R1 " + str(R1) + str(datetime.datetime.now()))
+    realizaLog("K1: " + str(K))
     return K
+
+def realizaLog(msg):
+    if (geraLogsDebugs):
+        print(msg)
 
 clientSocket = socket(AF_INET, SOCK_STREAM)
 G = 11
@@ -50,7 +55,7 @@ N = 23
 X = 1250000
 K = 3
 
-print ("TCP Server em Execução \n")
+print ("TCP Server em Execução")
 
 abreSocket()
 connectionSocket, addr = serverSocket.accept()
@@ -60,7 +65,9 @@ K = obtemChaveDiffieHellman()
 msgCript = connectionSocket.recv(65000)
 msgCriptUnicode = str(msgCript,"utf-8")
 msg = criptDecript(msgCriptUnicode, K, True)
-print ("Mensagem criptografada recebida: ", msgCriptUnicode)
+
+realizaLog("Mensagem criptografada recebida: " + msgCriptUnicode)
+
 print ("Mensagem decriptografada : ", msg)
 
 fechaSocket()
